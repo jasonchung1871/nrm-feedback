@@ -3,8 +3,9 @@ ARG DOCKER_REGISTRY=docker.io/library
 #####################
 ### Server Build Step
 #####################
-FROM --platform=${TARGETPLATFORM:-linux/amd64} $DOCKER_REGISTRY/golang:1.17-buster AS server-builder 
+FROM --platform=${TARGETPLATFORM:-linux/amd64} $DOCKER_REGISTRY/golang:1.27-bookworm AS server-builder
 
+RUN apt-get update && apt-get install -y build-essential gcc libc6-dev
 
 RUN mkdir /server
 WORKDIR /server
@@ -15,36 +16,29 @@ RUN go mod download
 COPY fider .
 
 ARG COMMITHASH
-RUN sed -i -e '/auth :=/d' \
-    -e 's/servername, smtpConfig.EnableStartTLS, auth, email/servername, false, nil, email/g' \
-    -e 's/Config{ServerName: host}/Config{InsecureSkipVerify: true, ServerName: host}/g' \
+RUN sed -i -e '/auth := authenticate(smtpConfig.Username, smtpConfig.Password, smtpConfig.Host)/d' \
+    -e 's/smtpConfig.EnableStartTLS, smtpConfig.EnableImplicitTLS, auth, email.NoReply/false, false, nil, email.NoReply/' \
     app/services/email/smtp/smtp.go && \
     COMMITHASH=${COMMITHASH} GOOS=${TARGETOS} GOARCH=${TARGETARCH} make build-server
 
 #################
 ### UI Build Step
 #################
-FROM --platform=${TARGETPLATFORM:-linux/amd64} $DOCKER_REGISTRY/node:16-buster AS ui-builder 
+FROM --platform=${TARGETPLATFORM:-linux/amd64} $DOCKER_REGISTRY/node:22-bookworm AS ui-builder
 
 WORKDIR /ui
 
 COPY fider/package.json fider/package-lock.json ./
 RUN npm ci
-RUN npx browserslist@latest --update-db 
 
 COPY fider .
-# Override SMTP TLS
-RUN sed -i -e '/auth :=/d' \
-    -e 's/servername, smtpConfig.EnableStartTLS, auth, email/servername, false, nil, email/g' \
-    -e 's/Config{ServerName: host}/Config{InsecureSkipVerify: true, ServerName: host}/g' \
-    app/services/email/smtp/smtp.go 
 RUN make build-ssr
 RUN make build-ui
 
 ################
 ### Runtime Step
 ################
-FROM --platform=${TARGETPLATFORM:-linux/amd64} $DOCKER_REGISTRY/debian:buster-slim
+FROM --platform=${TARGETPLATFORM:-linux/amd64} $DOCKER_REGISTRY/debian:bookworm-slim
 
 RUN apt-get update
 RUN apt-get install -y ca-certificates
@@ -56,6 +50,7 @@ COPY --from=server-builder /server/views /app/views
 COPY --from=server-builder /server/locale /app/locale
 COPY --from=server-builder /server/LICENSE /app
 COPY --from=server-builder /server/fider /app
+COPY --from=server-builder /server/static /app/static
 
 COPY --from=ui-builder /ui/favicon.png /app
 COPY --from=ui-builder /ui/dist /app/dist
