@@ -15,10 +15,10 @@ parameters:
     value: latest
   - name: SOURCE_REPOSITORY_URL
     required: true
-    value: https://github.com/bcgov/nrm-feedback
+    value: https://github.com/jasonchung1871/nrm-feedback
   - name: SOURCE_REPOSITORY_REF
     required: true
-    value: master
+    value: feat/upgrade-to-fider-0_38_2
 objects:
   - kind: ImageStream
     apiVersion: v1
