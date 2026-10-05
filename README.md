@@ -190,7 +190,7 @@ Type `exit` to exit the remote shell.
      * With parameters:
         * Namespace=599f0a-tools
         * Image Stream=fider-bcgov
-        * Version of Fider Product Feedback=0.18.0
+        * Version of Fider Product Feedback=0.38.2
         * Feedback Product Name=acmefider
         * Fider Go Environment=production
         * Fider application logging level=INFO
@@ -317,7 +317,7 @@ oc -n ${PROJECT} new-app --file=./ci/openshift/fider-bcgov.dc.yaml -p FEEDBACK_N
      * With parameters:
         * Namespace=599f0a-tools
         * Image Stream=fider-bcgov
-        * Version of Fider Product Feedback=0.19.1
+        * Version of Fider Product Feedback=0.38.2
         * Feedback Product Name=gwfider
         * Fider Go Environment=production
         * Fider application logging level=ERROR

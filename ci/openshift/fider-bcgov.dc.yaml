@@ -13,10 +13,10 @@ parameters:
     displayName: Image Stream
     name: IS_NAME
     value: fider-bcgov
-  - description: Version of Feedback image to be used (e.g. v0.18.0)
+  - description: Version of Feedback image to be used (e.g. v0.38.2)
     displayName: Version of Fider Product Feedback
     name: IS_VERSION
-    value: 0.21.1
+    value: 0.38.2
   - description: The short-name of the Feedback Product, lower-case with hyphen.
     displayName: Feedback Product Name
     name: FEEDBACK_NAME
