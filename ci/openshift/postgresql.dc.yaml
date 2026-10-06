@@ -79,7 +79,7 @@ objects:
             from:
               kind: ImageStreamTag
               namespace: openshift
-              name: postgresql:9.6
+              name: postgresql:15-el9
       replicas: 1
       revisionHistoryLimit: 10
       test: false
@@ -100,7 +100,7 @@ objects:
                 claimName: "${FEEDBACK_NAME}-postgresql"
           containers:
             - name: "${FEEDBACK_NAME}-postgresql"
-              image: image-registry.openshift-image-registry.svc:5000/openshift/postgresql:9
+              image: image-registry.openshift-image-registry.svc:5000/openshift/postgresql:15-el9
               ports:
                 - containerPort: 5432
                   protocol: TCP
