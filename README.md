@@ -77,7 +77,9 @@ To create an image stream using this forked code (replace `<tools-namespace>` wi
 
 > oc -n &lt;tools-namespace&gt; create istag fider-bcgov:latest
 
-> oc -n &lt;tools-namespace&gt; process -f ci/openshift/fider-bcgov.bc.yaml | oc -n &lt;tools-namespace&gt; apply -f -
+Set `REGISTRY_PULL_SECRET` to the Artifactory Docker pull secret name in the tools namespace (for example, `artifacts-pull-fider-egvcxg`; use the name created for your namespace).
+
+> oc -n &lt;tools-namespace&gt; process -f ci/openshift/fider-bcgov.bc.yaml -p REGISTRY_PULL_SECRET=artifacts-pull-fider-egvcxg | oc -n &lt;tools-namespace&gt; apply -f -
 
 > oc -n &lt;tools-namespace&gt; start-build nrm-feedback
 

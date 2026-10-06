@@ -19,6 +19,9 @@ parameters:
   - name: SOURCE_REPOSITORY_REF
     required: true
     value: feat/upgrade-to-fider-0_38_2
+  - name: REGISTRY_PULL_SECRET
+    description: Existing Docker registry pull secret in the build namespace.
+    required: true
 objects:
   - kind: ImageStream
     apiVersion: v1
@@ -48,7 +51,7 @@ objects:
               value: artifacts.developer.gov.bc.ca/docker-remote
               # value: docker.io/library              
           pullSecret:
-            name: docker-pull-passthru
+            name: "${REGISTRY_PULL_SECRET}"
       output:
         to:
           kind: ImageStreamTag
